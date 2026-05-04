@@ -1,0 +1,98 @@
+/* Scrollbar Hide Utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/*--- Custom Classes for Header Starts ---*/
+
+.navLink {
+    @apply flex items-center gap-[4px] relative cursor-pointer transition-all duration-200;
+  }
+  
+  .navLink img {
+    filter: brightness(0) saturate(100%) invert(40%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+  }
+  
+  .navLink:hover {
+    color: #D60F0F;
+  }
+  
+  .navLink:hover img {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(340deg) brightness(104%) contrast(97%);
+  }
+  
+  .navLink:hover .navItem {
+    color: #D60F0F;
+  }
+  
+  .navLink:hover::after {
+    content: '';
+    @apply absolute bottom-[-8px] left-1/2 transform -translate-x-1/2 w-full h-[2px] bg-[#D60F0F] rounded-[1px];
+  }
+  
+  /* Active state for Flights (default selected) */
+  .navLink-active {
+    color: #D60F0F;
+  }
+  
+  .navLink-active img {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(340deg) brightness(104%) contrast(97%);
+  }
+  
+  .navLink-active .navItem {
+    color: #D60F0F;
+  }
+  
+  .navLink-active::after {
+    content: '';
+    @apply absolute bottom-[-8px] left-1/2 transform -translate-x-1/2 w-full h-[2px] bg-[#D60F0F] rounded-[1px];
+  }
+
+  .hotel-icon-white {
+    filter: brightness(0) invert(1);
+  }
+  /*--- Custom Classes for Header End ---*/
+
+/* --- Custom classes for filter checkbox start --- */
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 1px solid #CACACA;
+  border-radius: 4px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.checkbox:checked ~ .checkmark {
+  background-color: #D60F0F;
+  border-color: #D60F0F;
+}
+
+.checkbox:checked ~ .checkmark:after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 4px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* --- Custom classes for filter checkbox end --- */
+  
