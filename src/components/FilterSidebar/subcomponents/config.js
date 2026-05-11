@@ -1,13 +1,21 @@
 export const filterGroups = [
     { title: "Popular Filter", options: ["Free Breakfast", "Swimming Pool", "Free Cancellation"] },
     { title: "Smart Filter for User Convenience", options: ["Couple Friendly", "Pay at Hotel", "Top Rated"] },
-    { title: "Property Type / Hotel Chain", options: ["Hotel", "Resort", "Apartment", "Taj Group"] },
+    { title: "Property Type ", options: ["Hotel", "Resort", "Apartment", "Taj Group"] },
     { title: "Payment Modes", options: ["Pay at Hotel", "Pay Later", "Prepaid"] },
     { title: "Room Offers", options: ["Best Bank Offers", "Free Breakfast", "Free Upgrade"] },
     { title: "Distance to Center", options: ["< 2 km", "2-5 km", "5-10 km"] },
 ];
 
 export const amenityOptions = ["Free WiFi", "Swimming Pool", "Spa & Wellness", "Airport Shuttle", "Gym", "Parking"];
+
+export const hotelChains = [
+    { name: "Taj Hotels", count: 32 },
+    { name: "Marriott", count: 48 },
+    { name: "ITC Hotels", count: 24 },
+    { name: "The Oberoi", count: 18 },
+    { name: "Hyatt", count: 21 },
+];
 
 export const priceRanges = [
     { label: "₹ 0 - ₹ 2000", count: 878 },

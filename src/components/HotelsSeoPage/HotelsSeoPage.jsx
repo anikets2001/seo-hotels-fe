@@ -1,16 +1,19 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Header from "../Header/Header";
 import BookingEngine from "../BokingEngine/BookingEngine";
 import { breadCrumbs, hotels } from "@/utils/config";
+import { SPONSORED_FILTER_ID } from "../FilterSidebar/subcomponents/SponsoredFilter";
 import BreadCrumbs from "../BreadCrumbs/BreadCrumbs";
 import PrimaryContent from "../PrimaryContent/PrimaryContent";
+import BankOffersCarousel from "../BankOffersCarousel/BankOffersCarousel";
 import ResultsSection from "../ResultsSection/ResultsSection";
 import SecondaryContent from "../SecondaryContent/SecondaryContent";
 import Footer from "../Footer/Footer";
 import FiltersSidebar from "../FilterSidebar/FilterSidebar";
 import MobileSearchCard from "../MobileComponents/MobileSearchCard";
 import MobileSortFilterBar from "../MobileComponents/MobileSortFilterBar";
+import MobileTopBar from "../MobileComponents/MobileTopBar";
 
 export default function HotelsSeoPage() {
   const tripNights = 3;
@@ -37,9 +40,19 @@ export default function HotelsSeoPage() {
   const handleClearFilters = () => {
     setSelectedFilters([]);
   };
+
+  // Currently only the Sponsored filter is wired to actually filter the list.
+  // Other filters remain display-only chips until backend filtering lands.
+  const isSponsoredOnly = selectedFilters.some((filter) => filter.id === SPONSORED_FILTER_ID);
+  const visibleHotels = useMemo(
+    () => (isSponsoredOnly ? hotels.filter((hotel) => hotel.sponsored) : hotels),
+    [isSponsoredOnly],
+  );
+
   return (
     <div>
-      <div className='bg-[#F2F2F2] py-[17px] px-[12px] block fixed w-full z-[9999] lg:hidden'>
+      <div className='bg-[#F2F2F2] py-[12px] px-[12px] block fixed w-full z-[9999] lg:hidden'>
+        <MobileTopBar />
         <MobileSearchCard />
         <MobileSortFilterBar
           selectedFilters={selectedFilters}
@@ -51,10 +64,11 @@ export default function HotelsSeoPage() {
       <Header />
       <BookingEngine />
 
-      <div className="bg-gray-50 pt-28 lg:pt-40 px-4 lg:px-0">
-        <div className="pt-5 lg:max-w-[1530px] lg:mx-auto">
+      <div className="bg-gray-50 pt-44 lg:pt-40 px-4 lg:px-0">
+        <div className="pt-5 lg:px-[200px]">
           <BreadCrumbs breadcrumbItems={breadCrumbs} />
           <PrimaryContent />
+          <BankOffersCarousel />
           <div className="flex gap-6 mt-4 lg:mt-12">
             <FiltersSidebar
               selectedFilters={selectedFilters}
@@ -63,7 +77,7 @@ export default function HotelsSeoPage() {
             />
             <div className="w-full lg:w-[75%]">
               <ResultsSection
-                hotels={hotels}
+                hotels={visibleHotels}
                 filterChips={selectedFilters}
                 onRemoveFilter={handleFilterRemove}
                 tripNights={tripNights}

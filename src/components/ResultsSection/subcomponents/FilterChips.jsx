@@ -41,7 +41,7 @@ const FilterChips = ({ filterChips, onRemoveFilter }) => {
     return (
         <>
             {filterChips.length ? (
-                <div className="mb-4 lg:mb-2 flex items-center gap-2">
+                <div className="mb-4 flex items-center gap-2">
                     {canScrollLeft ? (
                         <button
                             onClick={handleScrollLeft}

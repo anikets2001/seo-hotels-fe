@@ -8,6 +8,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'imgcld.yatra.com' },
       { protocol: 'https', hostname: 'www.yatra.com' },
+      { protocol: 'https', hostname: 'ns.yatracdn.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
   },

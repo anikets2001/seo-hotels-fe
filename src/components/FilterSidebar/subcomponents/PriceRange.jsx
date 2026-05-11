@@ -5,7 +5,7 @@ import { priceRanges } from "./config";
 const PriceRange = ({ isChecked, onToggleFilter }) => {
     return (
         <div className="mb-6 bg-gradient-to-b from-white to-gray-50 rounded-xl p-3.5 border border-gray-200 shadow-sm">
-            <h3 className="font-bold text-[24px] text-gray-900 mb-3">Price Per Night</h3>
+            <h3 className="font-bold text-[24px] text-gray-900 mb-3">Quick Price Filters</h3>
             <div className="space-y-2.5 mb-4">
               {priceRanges.map((range) => {
                 const filterId = `price:${range.label}`;

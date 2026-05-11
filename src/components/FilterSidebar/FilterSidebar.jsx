@@ -3,7 +3,10 @@
 import MapView from "../MapView/MapView";
 import AmenitiesFilter from "./subcomponents/AmenitiesFilter";
 import FilterGroups from "./subcomponents/FilterGroups";
+import HotelChainFilter from "./subcomponents/HotelChainFilter";
+import PriceBar from "./subcomponents/PriceBar";
 import PriceRange from "./subcomponents/PriceRange";
+import SponsoredFilter from "./subcomponents/SponsoredFilter";
 import StarRatingsFilter from "./subcomponents/StarRatingsFilter";
 
 const FiltersSidebar = ({ selectedFilters, onToggleFilter, onClearFilters }) => {
@@ -24,9 +27,12 @@ const FiltersSidebar = ({ selectedFilters, onToggleFilter, onClearFilters }) => 
           </button>
         </div>
 
+        <SponsoredFilter isChecked={isChecked} onToggleFilter={onToggleFilter} />
+        <PriceBar />
         <PriceRange isChecked={isChecked} onToggleFilter={onToggleFilter} />
 
         <div className="space-y-4">
+          <HotelChainFilter isChecked={isChecked} onToggleFilter={onToggleFilter} />
           <FilterGroups isChecked={isChecked} onToggleFilter={onToggleFilter} />
           <StarRatingsFilter isChecked={isChecked} onToggleFilter={onToggleFilter} />
           <AmenitiesFilter isChecked={isChecked} onToggleFilter={onToggleFilter} />

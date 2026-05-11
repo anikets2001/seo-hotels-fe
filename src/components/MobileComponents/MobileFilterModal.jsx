@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import PriceBar from "../FilterSidebar/subcomponents/PriceBar";
 import PriceRange from "../FilterSidebar/subcomponents/PriceRange";
 import FilterGroups from "../FilterSidebar/subcomponents/FilterGroups";
 import StarRatingsFilter from "../FilterSidebar/subcomponents/StarRatingsFilter";
+import HotelChainFilter from "../FilterSidebar/subcomponents/HotelChainFilter";
 import AmenitiesFilter from "../FilterSidebar/subcomponents/AmenitiesFilter";
+import SponsoredFilter from "../FilterSidebar/subcomponents/SponsoredFilter";
 import useModalScrollLock from "@/hooks/useModalScrollLock";
 
 const MobileFilterModal = ({
@@ -78,7 +81,11 @@ const MobileFilterModal = ({
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <SponsoredFilter isChecked={isChecked} onToggleFilter={onToggleFilter} />
+          <PriceBar />
           <PriceRange isChecked={isChecked} onToggleFilter={onToggleFilter} />
+          <HotelChainFilter isChecked={isChecked} onToggleFilter={onToggleFilter} />
+
           <div className="pb-4 border-b border-gray-100">
             <FilterGroups isChecked={isChecked} onToggleFilter={onToggleFilter} />
           </div>

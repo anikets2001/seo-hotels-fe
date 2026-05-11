@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, MapPinIcon, StarIcon } from "lucide-react";
 import { formatInr, parseInrToNumber } from "./helpers";
+import StarRatingBadge from "./StarRatingBadge";
+import SponsoredTag from "./SponsoredTag";
+import WishlistButton from "./WishlistButton";
 import Image from "next/image";
 
 const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
@@ -20,11 +24,6 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
     hotel.amenities?.[1] ? `${hotel.amenities[1]} access` : "Prime location connectivity",
   ].filter(Boolean);
 
-  const seoDescription = `${hotel.name} is a preferred stay option in Mumbai for business and leisure travelers. Enjoy ${hotel.room
-    }, convenient access to key city zones, and trusted guest reviews with a rating of ${hotel.rating.replace(
-      " / 5",
-      ""
-    )}.`;
   const nightlyPrice = parseInrToNumber(hotel.price);
   const nightlyOldPrice = parseInrToNumber(hotel.oldPrice);
   const nightlyTax = parseInrToNumber(hotel.taxes);
@@ -35,11 +34,20 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
     ? `+ ${formatInr(nightlyTax * tripNights)} taxes & fees`
     : hotel.taxes;
   const currentImage = images[activeImageIndex];
+  const hotelDetailHref = `/`;
 
   return (
-    <article className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)] transition-shadow">
+    <article className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)] transition-shadow focus-within:ring-2 focus-within:ring-primary/30">
+      {/* Card-wide link sits at z-[1]. The image area is lifted to z-[2] so its
+          controls (carousel, wishlist, sponsored tag) absorb their own clicks
+          and never accidentally navigate to the detail page. */}
+      <Link
+        href={hotelDetailHref}
+        aria-label={`View details for ${hotel.name}`}
+        className="absolute inset-0 z-[1] focus:outline-none"
+      />
       <div className="flex flex-col md:flex-row">
-        <div className="md:w-[29%] relative h-44 md:h-auto md:self-stretch">
+        <div className="md:w-[29%] relative z-[2] h-44 md:h-auto md:self-stretch">
           <Image className="h-full w-full object-cover"
             src={currentImage}
             alt={hotel.name}
@@ -48,11 +56,19 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
             quality={75}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
-          {hotel.badge ? (
-            <div className="absolute top-3 left-3 bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase">
-              {hotel.badge}
+          {(hotel.sponsored || hotel.badge) ? (
+            <div className="absolute top-3 left-3 flex flex-col items-start gap-1.5">
+              {hotel.sponsored ? <SponsoredTag /> : null}
+              {hotel.badge ? (
+                <span className="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase">
+                  {hotel.badge}
+                </span>
+              ) : null}
             </div>
           ) : null}
+          <div className="absolute top-3 right-3">
+            <WishlistButton hotelName={hotel.name} />
+          </div>
           {activeImageIndex > 0 ? (
             <button
               type="button"
@@ -83,11 +99,7 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
             <div>
               {hotel.stars ? (
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-orange-400 flex">
-                    {Array.from({ length: hotel.stars }).map((_, index) => (
-                      <StarIcon key={`${hotel.id}-star-${index}`} className="text-[15px]" />
-                    ))}
-                  </span>
+                  <StarRatingBadge stars={hotel.stars} size={15} />
                   <span className="text-xs text-gray-500">{hotel.category}</span>
                 </div>
               ) : null}
@@ -98,9 +110,10 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
               </p>
               {hotel.distanceFromCenter ? <p className="text-[15px] text-gray-400 mt-1">{hotel.distanceFromCenter}</p> : null}
             </div>
-            <div className="text-right shrink-0 pl-2">
-              <div className="bg-primary/10 text-primary font-extrabold px-2 py-1 rounded-md text-xs mb-1 inline-block">
-                {hotel.rating}
+            <div className="flex flex-col items-end shrink-0 pl-2">
+              <div className="bg-primary/10 text-primary font-extrabold px-2 py-1 rounded-md text-xs mb-1 flex items-center gap-2 w-fit">
+                <StarIcon className="text-[16px]" />
+                <span className="text-[16px] font-bold">{hotel.stars}</span>
               </div>
               <p className="text-[15px] text-gray-500">({hotel.reviews})</p>
             </div>
@@ -133,7 +146,6 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
                   </li>
                 ))}
               </ul>
-              <p className="text-[15px] leading-4.5 text-gray-600">{seoDescription}</p>
               {hotel.bankOffer ? <p className="text-primary text-[15px] mt-1">{hotel.bankOffer}</p> : null}
             </div>
             <div className="text-right bg-gray-50 border border-gray-100 rounded-xl px-3 py-1.5 min-w-[176px]">
@@ -141,9 +153,12 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
               <p className="text-[25px] font-extrabold leading-tight">{displayPrice}</p>
               <p className="text-[15px] text-gray-500 mb-1.5">{displayTaxes}</p>
               <p className="text-[10px] text-gray-400 mb-2">{showTotalPrice ? `for ${tripNights} nights` : "per night"}</p>
-              <button className="bg-primary hover:bg-[#B80D0D] border-none text-[#F8FAFC] font-semibold text-sm px-5 py-2.5 rounded-md cursor-pointer transition-colors duration-200 ease-in-out">
+              <Link
+                href={hotelDetailHref}
+                className="relative z-[2] inline-block bg-primary hover:bg-[#B80D0D] border-none text-[#F8FAFC] font-semibold text-sm px-5 py-2.5 rounded-md cursor-pointer transition-colors duration-200 ease-in-out"
+              >
                 View Details
-              </button>
+              </Link>
             </div>
           </div>
         </div>
