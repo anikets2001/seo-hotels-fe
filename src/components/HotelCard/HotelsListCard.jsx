@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, MapPinIcon, StarIcon } from "lucide-react";
+import { CheckIcon, MapPinIcon, StarIcon } from "lucide-react";
 import { formatInr, parseInrToNumber } from "./helpers";
-import StarRatingBadge from "./StarRatingBadge";
-import SponsoredTag from "./SponsoredTag";
-import WishlistButton from "./WishlistButton";
-import Image from "next/image";
+import HotelImageCarousel from "./subcomponents/HotelImageCarousel";
+import SponsoredTag from "./subcomponents/SponsoredTag";
+import StarRatingBadge from "./subcomponents/StarRatingBadge";
+import WishlistButton from "./subcomponents/WishlistButton";
 
 const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
   const fallbackGallery = [
@@ -16,7 +15,6 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
     "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
   ];
   const images = hotel.images?.length ? hotel.images : fallbackGallery;
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const keyBenefits = [
     hotel.highlight,
@@ -33,14 +31,10 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
   const displayTaxes = showTotalPrice
     ? `+ ${formatInr(nightlyTax * tripNights)} taxes & fees`
     : hotel.taxes;
-  const currentImage = images[activeImageIndex];
   const hotelDetailHref = `/`;
 
   return (
     <article className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)] transition-shadow focus-within:ring-2 focus-within:ring-primary/30">
-      {/* Card-wide link sits at z-[1]. The image area is lifted to z-[2] so its
-          controls (carousel, wishlist, sponsored tag) absorb their own clicks
-          and never accidentally navigate to the detail page. */}
       <Link
         href={hotelDetailHref}
         aria-label={`View details for ${hotel.name}`}
@@ -48,50 +42,31 @@ const HotelsListCard = ({ hotel, showTotalPrice, tripNights }) => {
       />
       <div className="flex flex-col md:flex-row">
         <div className="md:w-[29%] relative z-[2] h-44 md:h-auto md:self-stretch">
-          <Image className="h-full w-full object-cover"
-            src={currentImage}
+          <HotelImageCarousel
+            images={images}
             alt={hotel.name}
-            width={500}
-            height={500}
-            quality={75}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            idPrefix={hotel.id}
+            wrapperClassName="relative h-full w-full min-h-0 overflow-hidden"
+            imageClassName="h-full w-full object-cover"
+            countBadgeClassName="text-[15px] font-semibold leading-none"
+            topLeft={
+              hotel.sponsored || hotel.badge ? (
+                <div className="absolute top-3 left-3 z-[2] flex flex-col items-start gap-1.5">
+                  {hotel.sponsored ? <SponsoredTag /> : null}
+                  {hotel.badge ? (
+                    <span className="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase">
+                      {hotel.badge}
+                    </span>
+                  ) : null}
+                </div>
+              ) : null
+            }
+            topRight={
+              <div className="absolute top-3 right-3 z-[2]">
+                <WishlistButton hotelName={hotel.name} />
+              </div>
+            }
           />
-          {(hotel.sponsored || hotel.badge) ? (
-            <div className="absolute top-3 left-3 flex flex-col items-start gap-1.5">
-              {hotel.sponsored ? <SponsoredTag /> : null}
-              {hotel.badge ? (
-                <span className="bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase">
-                  {hotel.badge}
-                </span>
-              ) : null}
-            </div>
-          ) : null}
-          <div className="absolute top-3 right-3">
-            <WishlistButton hotelName={hotel.name} />
-          </div>
-          {activeImageIndex > 0 ? (
-            <button
-              type="button"
-              onClick={() => setActiveImageIndex((current) => Math.max(current - 1, 0))}
-              className="absolute top-1/2 left-2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 border border-gray-200 text-gray-700 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
-              aria-label="Previous image"
-            >
-              <ChevronLeftIcon className="text-[18px]" />
-            </button>
-          ) : null}
-          {activeImageIndex < images.length - 1 ? (
-            <button
-              type="button"
-              onClick={() => setActiveImageIndex((current) => Math.min(current + 1, images.length - 1))}
-              className="absolute top-1/2 right-2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 border border-gray-200 text-gray-700 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
-              aria-label="Next image"
-            >
-              <ChevronRightIcon className="text-[18px]" />
-            </button>
-          ) : null}
-          <div className="absolute bottom-2 left-2 px-2 py-1 rounded-full bg-black/65 text-white text-[15px] font-semibold leading-none">
-            {activeImageIndex + 1}/{images.length}
-          </div>
         </div>
 
         <div className="md:w-[71%] p-3.5 md:p-4 flex flex-col justify-between">

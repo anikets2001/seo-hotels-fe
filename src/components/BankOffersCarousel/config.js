@@ -1,6 +1,3 @@
-// Bank offers shown in the BankOffersCarousel.
-// Each offer carries its own brand accent so we can render it without
-// hardcoding card-specific styles inside the component.
 export const bankOffers = [
   {
     id: "hsbc",

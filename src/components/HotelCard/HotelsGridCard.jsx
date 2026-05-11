@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { ChevronLeftIcon, ChevronRightIcon, MapPinIcon, StarIcon } from "lucide-react";
+import { MapPinIcon } from "lucide-react";
 import { formatInr, parseInrToNumber } from "./helpers";
-import StarRatingBadge from "./StarRatingBadge";
-import SponsoredTag from "./SponsoredTag";
-import WishlistButton from "./WishlistButton";
-import Image from "next/image";
+import HotelImageCarousel from "./subcomponents/HotelImageCarousel";
+import SponsoredTag from "./subcomponents/SponsoredTag";
+import StarRatingBadge from "./subcomponents/StarRatingBadge";
+import WishlistButton from "./subcomponents/WishlistButton";
 
 const HotelsGridCard = ({ hotel, showTotalPrice, tripNights }) => {
   const fallbackGallery = [
@@ -16,62 +15,38 @@ const HotelsGridCard = ({ hotel, showTotalPrice, tripNights }) => {
     "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
   ];
   const images = hotel.images?.length ? hotel.images : fallbackGallery;
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const currentImage = images[activeImageIndex];
   const nightlyPrice = parseInrToNumber(hotel.price);
   const displayPrice = showTotalPrice ? formatInr(nightlyPrice * tripNights) : hotel.price;
   const hotelDetailHref = `/`;
 
   return (
     <article className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-[0_18px_35px_rgba(15,23,42,0.12)] transition-shadow group focus-within:ring-2 focus-within:ring-primary/30">
-      <div className="relative h-48 overflow-hidden">
-        <Image
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          src={currentImage}
-          alt={hotel.name}
-          width={500}
-          height={500}
-          quality={75}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-        {hotel.sponsored ? (
-          <div className="absolute top-3 left-3 z-[2]">
-            <SponsoredTag />
-          </div>
-        ) : null}
-        <div className="absolute top-3 right-3 z-[2] flex flex-col items-end gap-2">
-          <WishlistButton hotelName={hotel.name} />
-          {/* <div className="bg-white/90 backdrop-blur px-2 py-1 rounded text-primary flex items-center gap-1 font-bold text-sm">
+      <HotelImageCarousel
+        images={images}
+        alt={hotel.name}
+        idPrefix={hotel.id}
+        wrapperClassName="relative h-48 overflow-hidden"
+        imageClassName="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        countBadgeClassName="text-[13px] font-semibold leading-none"
+        topLeft={
+          hotel.sponsored ? (
+            <div className="absolute top-3 left-3 z-[2]">
+              <SponsoredTag />
+            </div>
+          ) : null
+        }
+        topRight={
+          <div className="absolute top-3 right-3 z-[2] flex flex-col items-end gap-2">
+            <WishlistButton hotelName={hotel.name} />
+            {/* <div className="bg-white/90 backdrop-blur px-2 py-1 rounded text-primary flex items-center gap-1 font-bold text-sm">
             <StarIcon className="text-[16px]" />
             {hotel.stars}
           </div> */}
-        </div>
-        {activeImageIndex > 0 ? (
-          <button
-            type="button"
-            onClick={() => setActiveImageIndex((current) => Math.max(current - 1, 0))}
-            className="absolute top-1/2 left-2 -translate-y-1/2 z-[2] w-8 h-8 rounded-full bg-white/90 border border-gray-200 text-gray-700 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
-            aria-label="Previous image"
-          >
-            <ChevronLeftIcon className="text-[18px]" />
-          </button>
-        ) : null}
-        {activeImageIndex < images.length - 1 ? (
-          <button
-            type="button"
-            onClick={() => setActiveImageIndex((current) => Math.min(current + 1, images.length - 1))}
-            className="absolute top-1/2 right-2 -translate-y-1/2 z-[2] w-8 h-8 rounded-full bg-white/90 border border-gray-200 text-gray-700 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
-            aria-label="Next image"
-          >
-            <ChevronRightIcon className="text-[18px]" />
-          </button>
-        ) : null}
-        <div className="absolute bottom-2 left-2 px-2 py-1 rounded-full bg-black/65 text-white text-[13px] font-semibold leading-none">
-          {activeImageIndex + 1}/{images.length}
-        </div>
-      </div>
+          </div>
+        }
+      />
       {/* Only the section below the image is the clickable detail-page area —
-          this keeps the image controls (carousel arrows, wishlist) free of
+          this keeps the image controls (carousel, wishlist) free of
           accidental navigation. */}
       <div className="relative">
         <Link

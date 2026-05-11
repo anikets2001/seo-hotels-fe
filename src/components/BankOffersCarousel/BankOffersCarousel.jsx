@@ -5,12 +5,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
 import { bankOffers } from "./config";
 
-// Pixels-per-frame for the auto-scroll loop. requestAnimationFrame
-// runs ~60fps, so 0.6 px/frame ≈ 36 px/sec — slow & calm marquee feel.
 const AUTO_SCROLL_SPEED = 0.6;
-
-// How long auto-scroll stays paused after the user clicks a chevron,
-// so the manual nudge doesn't immediately get fought by the marquee.
 const RESUME_DELAY_MS = 1500;
 
 const BankOffersCarousel = () => {
